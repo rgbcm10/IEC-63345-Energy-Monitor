@@ -49,7 +49,7 @@ export const MeterDetailContainer: React.FC<Props> = ({ meterId }) => {
     };
 
     return (
-        <div className="animate-in fade-in duration-300">
+        <div>
             <MeterDetailHeader meter={meter} />
 
             <div className="flex space-x-2 mb-6 border-b border-slate-200 dark:border-slate-700">

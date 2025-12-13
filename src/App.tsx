@@ -86,77 +86,81 @@ const AppContent: React.FC = () => {
     };
 
     return (
-        <div className={`flex h-screen overflow-hidden font-sans transition-colors duration-200 ${darkMode ? 'dark bg-slate-900 text-slate-100' : 'bg-slate-50 text-slate-900'}`}>
-            {/* Kiosk Security Overlay */}
-            <SessionTimeout timeoutMinutes={5} />
+        // Root container handles Dark Mode class
+        <div className={`font-sans h-screen w-screen ${darkMode ? 'dark bg-slate-900 text-slate-100' : 'bg-slate-50 text-slate-900'}`}>
+            
+            {/* Main Application Layout - specific container for layout to allow modals to sit outside overflow */}
+            <div className="flex h-full w-full overflow-hidden">
+                {isMobile && isSidebarOpen && (
+                    <div 
+                        className="fixed inset-0 bg-black/50 z-20 backdrop-blur-sm print:hidden"
+                        onClick={() => setIsSidebarOpen(false)}
+                    />
+                )}
 
-            {isMobile && isSidebarOpen && (
-                <div 
-                    className="fixed inset-0 bg-black/50 z-20 backdrop-blur-sm print:hidden"
-                    onClick={() => setIsSidebarOpen(false)}
+                <Sidebar 
+                    isSidebarOpen={isSidebarOpen}
+                    isMobile={isMobile}
+                    selectedMeterId={selectedMeterId}
+                    onSelectMeter={(id) => {
+                        setSelectedMeterId(id);
+                        if(isMobile) setIsSidebarOpen(false);
+                    }}
+                    onToggleSettings={() => setIsSettingsOpen(true)}
                 />
-            )}
 
+                <main className={`flex-1 flex flex-col min-w-0 overflow-hidden transition-colors duration-200 ${darkMode ? 'bg-slate-900' : 'bg-slate-50/50'}`}>
+                    {maintenanceMode && <MaintenanceBanner />}
+                    
+                    <header className={`h-16 border-b flex items-center justify-between px-4 lg:px-8 transition-colors duration-200 ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'} print:hidden`}>
+                        <div className="flex items-center">
+                            <button 
+                                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                                className={`p-2 rounded-md lg:hidden focus:outline-none focus:ring-2 focus:ring-blue-500 ${darkMode ? 'text-slate-400 hover:bg-slate-700' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100'}`}
+                            >
+                                {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
+                            </button>
+                            <h1 className={`text-xl font-semibold ml-2 lg:ml-0 ${darkMode ? 'text-white' : 'text-slate-800'}`}>
+                                {getPageTitle()}
+                            </h1>
+                        </div>
+                        <div className="flex items-center space-x-2 sm:space-x-4">
+                             <div className={`hidden sm:flex items-center text-xs px-3 py-1 rounded-full ${darkMode ? 'bg-slate-700 text-slate-300' : 'bg-slate-100 text-slate-500'}`}>
+                                <span className="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse"></span>
+                                IEC 63345 Live
+                             </div>
+                             
+                             <button
+                                onClick={() => setIsLegendOpen(true)}
+                                className="p-2 rounded-full text-slate-400 hover:text-blue-500 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+                                title="Help & Legend"
+                             >
+                                <HelpCircle size={20} />
+                             </button>
+
+                             <div className="h-6 w-px bg-slate-200 dark:bg-slate-700 mx-1 hidden sm:block"></div>
+                             <FullScreenToggle />
+                        </div>
+                    </header>
+
+                    <div className="flex-1 overflow-auto p-4 lg:p-8 scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-600">
+                        <div className="max-w-7xl mx-auto h-full flex flex-col">
+                            <div className="print:hidden shrink-0">
+                                <Breadcrumb items={breadcrumbItems} />
+                            </div>
+                            
+                            <div className="flex-1 min-h-0">
+                                {renderContent()}
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+
+            {/* Overlays and Modals - Placed outside the overflow-hidden container */}
+            <SessionTimeout timeoutMinutes={5} />
             <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
             <StatusLegendModal isOpen={isLegendOpen} onClose={() => setIsLegendOpen(false)} />
-
-            <Sidebar 
-                isSidebarOpen={isSidebarOpen}
-                isMobile={isMobile}
-                selectedMeterId={selectedMeterId}
-                onSelectMeter={(id) => {
-                    setSelectedMeterId(id);
-                    if(isMobile) setIsSidebarOpen(false);
-                }}
-                onToggleSettings={() => setIsSettingsOpen(true)}
-            />
-
-            <main className={`flex-1 flex flex-col min-w-0 overflow-hidden ${darkMode ? 'bg-slate-900' : 'bg-slate-50/50'}`}>
-                {maintenanceMode && <MaintenanceBanner />}
-                
-                <header className={`h-16 border-b flex items-center justify-between px-4 lg:px-8 ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'} print:hidden`}>
-                    <div className="flex items-center">
-                        <button 
-                            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                            className={`p-2 rounded-md lg:hidden focus:outline-none focus:ring-2 focus:ring-blue-500 ${darkMode ? 'text-slate-400 hover:bg-slate-700' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100'}`}
-                        >
-                            {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
-                        </button>
-                        <h1 className={`text-xl font-semibold ml-2 lg:ml-0 ${darkMode ? 'text-white' : 'text-slate-800'}`}>
-                            {getPageTitle()}
-                        </h1>
-                    </div>
-                    <div className="flex items-center space-x-2 sm:space-x-4">
-                         <div className={`hidden sm:flex items-center text-xs px-3 py-1 rounded-full ${darkMode ? 'bg-slate-700 text-slate-300' : 'bg-slate-100 text-slate-500'}`}>
-                            <span className="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse"></span>
-                            IEC 63345 Live
-                         </div>
-                         
-                         <button
-                            onClick={() => setIsLegendOpen(true)}
-                            className="p-2 rounded-full text-slate-400 hover:text-blue-500 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
-                            title="Help & Legend"
-                         >
-                            <HelpCircle size={20} />
-                         </button>
-
-                         <div className="h-6 w-px bg-slate-200 dark:bg-slate-700 mx-1 hidden sm:block"></div>
-                         <FullScreenToggle />
-                    </div>
-                </header>
-
-                <div className="flex-1 overflow-auto p-4 lg:p-8 scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-600">
-                    <div className="max-w-7xl mx-auto h-full flex flex-col">
-                        <div className="print:hidden shrink-0">
-                            <Breadcrumb items={breadcrumbItems} />
-                        </div>
-                        
-                        <div className="flex-1 min-h-0">
-                            {renderContent()}
-                        </div>
-                    </div>
-                </div>
-            </main>
         </div>
     );
 };

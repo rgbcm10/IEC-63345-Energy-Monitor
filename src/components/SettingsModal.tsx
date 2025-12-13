@@ -1,8 +1,8 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal } from './ui/Modal';
 import { useMDC } from '../context/MDCContext';
-import { Play, Pause, RefreshCw, Zap, Moon, Sun, Lock, Unlock, Network, Activity, Grid, Trash, Wrench } from 'lucide-react';
+import { Play, Pause, RefreshCw, Zap, Moon, Sun, Lock, Unlock, Activity, Grid, Trash, Wrench } from 'lucide-react';
 import { RangeSlider } from './ui/RangeSlider';
 import { useToast } from '../context/ToastContext';
 import { useAutoLock } from '../hooks/useAutoLock';
@@ -41,6 +41,15 @@ export const SettingsModal: React.FC<Props> = ({ isOpen, onClose }) => {
         showToast("Settings locked due to inactivity", "info");
     }, isOpen);
 
+    // Reset state when modal opens/closes
+    useEffect(() => {
+        if (!isOpen) {
+            // Reset to locked state when closed
+            setIsAuthenticated(false);
+            setPin(['', '', '', '']);
+        }
+    }, [isOpen]);
+
     const handlePinChange = (index: number, value: string) => {
         if (value.length > 1) return;
         const newPin = [...pin];
@@ -48,8 +57,11 @@ export const SettingsModal: React.FC<Props> = ({ isOpen, onClose }) => {
         setPin(newPin);
 
         if (value && index < 3) {
-            const nextInput = document.getElementById(`pin-${index + 1}`);
-            nextInput?.focus();
+            // Slight delay to ensure DOM update
+            setTimeout(() => {
+                const nextInput = document.getElementById(`pin-${index + 1}`);
+                if (nextInput) nextInput.focus();
+            }, 10);
         }
 
         if (newPin.join('') === '0000') {
@@ -78,6 +90,7 @@ export const SettingsModal: React.FC<Props> = ({ isOpen, onClose }) => {
                         value={pin[i]}
                         onChange={(e) => handlePinChange(i, e.target.value)}
                         className="w-12 h-14 border border-slate-300 dark:border-slate-600 rounded-lg text-center text-2xl font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                        autoFocus={i === 0}
                     />
                 ))}
             </div>
@@ -87,7 +100,7 @@ export const SettingsModal: React.FC<Props> = ({ isOpen, onClose }) => {
     return (
         <Modal isOpen={isOpen} onClose={onClose} title="System Settings">
             {!isAuthenticated ? renderAuthScreen() : (
-                <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                <div className="space-y-8">
                     
                     {/* Simulator State */}
                     <div className="space-y-3">
@@ -131,7 +144,7 @@ export const SettingsModal: React.FC<Props> = ({ isOpen, onClose }) => {
                                     : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'
                                 }`}
                             >
-                                <Network size={16} className="mr-2" />
+                                <Activity size={16} className="mr-2" />
                                 {simulateNetworkLatency ? 'Latency: ON' : 'Latency: OFF'}
                             </button>
                         </div>

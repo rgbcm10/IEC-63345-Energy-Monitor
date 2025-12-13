@@ -40,7 +40,7 @@ export const Toast: React.FC<ToastProps> = ({ id, message, type, onDismiss, dura
     };
 
     return (
-        <div className={`flex items-start p-4 rounded-lg border shadow-lg w-80 animate-in slide-in-from-right-full duration-300 ${getStyles()}`}>
+        <div className={`flex items-start p-4 rounded-lg border shadow-lg w-80 ${getStyles()}`}>
             <div className="flex-shrink-0 mr-3 mt-0.5">
                 {getIcon()}
             </div>

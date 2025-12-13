@@ -49,7 +49,7 @@ export const EventLog: React.FC<Props> = ({ limit, className }) => {
     return (
         <div 
             ref={containerRef}
-            className={`bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden animate-in slide-in-from-bottom-2 duration-500 flex flex-col ${isMaximized ? 'h-full' : ''} ${className || ''}`}
+            className={`bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden flex flex-col ${isMaximized ? 'h-full' : ''} ${className || ''}`}
         >
             <div className="px-4 py-3 bg-slate-50 dark:bg-slate-700/30 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center">
                 <h3 className="text-sm font-bold text-slate-700 dark:text-slate-300 uppercase flex items-center">

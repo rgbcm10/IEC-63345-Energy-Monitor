@@ -4,7 +4,7 @@ import { Wrench } from 'lucide-react';
 
 export const MaintenanceBanner: React.FC = () => {
     return (
-        <div className="bg-yellow-400 text-yellow-950 px-4 py-2 flex items-center justify-center text-sm font-bold shadow-md animate-in slide-in-from-top duration-300 print:hidden sticky top-0 z-50">
+        <div className="bg-yellow-400 text-yellow-950 px-4 py-2 flex items-center justify-center text-sm font-bold shadow-md print:hidden sticky top-0 z-50">
             <div className="flex items-center space-x-2">
                 <Wrench size={18} className="animate-bounce" />
                 <span className="uppercase tracking-wider">System in Maintenance Mode</span>

@@ -16,12 +16,13 @@ export const useAutoLock = (
     isActive: boolean = true, 
     timeoutMs: number = 60000
 ) => {
-    const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    // Use 'number | null' for browser compatibility (window.setTimeout returns number)
+    const timerRef = useRef<number | null>(null);
 
     const resetTimer = () => {
-        if (timerRef.current) clearTimeout(timerRef.current);
+        if (timerRef.current !== null) clearTimeout(timerRef.current);
         if (!isLocked && isActive) {
-            timerRef.current = setTimeout(() => {
+            timerRef.current = window.setTimeout(() => {
                 onLock();
             }, timeoutMs);
         }
@@ -33,10 +34,10 @@ export const useAutoLock = (
             window.addEventListener('mousemove', resetTimer);
             window.addEventListener('keydown', resetTimer);
         } else {
-            if (timerRef.current) clearTimeout(timerRef.current);
+            if (timerRef.current !== null) clearTimeout(timerRef.current);
         }
         return () => {
-            if (timerRef.current) clearTimeout(timerRef.current);
+            if (timerRef.current !== null) clearTimeout(timerRef.current);
             window.removeEventListener('mousemove', resetTimer);
             window.removeEventListener('keydown', resetTimer);
         };

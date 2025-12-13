@@ -26,7 +26,7 @@ const DashboardOverview: React.FC<Props> = ({ onSelectMeter }) => {
   }
 
   return (
-    <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
+    <div className="space-y-8">
       {/* Header Banner */}
       <div className="bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 rounded-2xl p-6 lg:p-8 text-white shadow-xl relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between">
         <div className="absolute top-0 right-0 p-4 opacity-10 pointer-events-none">

@@ -40,7 +40,7 @@ export const SessionTimeout: React.FC<Props> = ({ timeoutMinutes = 5 }) => {
     if (!isIdle) return null;
 
     return (
-        <div className="fixed inset-0 z-[100] bg-slate-900/90 backdrop-blur-md flex flex-col items-center justify-center text-white animate-in fade-in duration-700">
+        <div className="fixed inset-0 z-[100] bg-slate-900/90 backdrop-blur-md flex flex-col items-center justify-center text-white">
             <div className="bg-slate-800 p-8 rounded-2xl shadow-2xl flex flex-col items-center max-w-sm w-full mx-4 border border-slate-700">
                 <div className="bg-slate-700 p-4 rounded-full mb-6 ring-4 ring-slate-600">
                     <Lock size={48} className="text-blue-400" />
